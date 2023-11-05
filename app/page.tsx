@@ -1,113 +1,144 @@
-import Image from 'next/image'
+'use client';
+import React from 'react';
+import {useForm, Controller, Control} from 'react-hook-form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation'
+
+
+// 폼 필드 인터페이스 정의
+interface IFormInput {
+    Search: string;
+    Country: string;
+    Period: string;
+    Channel: string;
+}
+
+// SelectWrapperProps 인터페이스 정의
+interface ISelectWrapperProps {
+    title: string;
+    options: string[];
+    control: Control<IFormInput>;
+}
+
+function getSearchResults(search: string, country: string, period: string): string[] {
+    if (search === '캐시미어' && country === 'Republic of Korea') {
+        switch (period) {
+            case 'Week':
+                return ['아크네 머플러', '캐시미어 머플러', '아크네 스튜디오 머플러', '목도리', '스카프', '아크네 스튜디오', '버버리 머플러'];
+            case 'Month':
+                return ['캐시미어 코트', '-', '캐시미어 니트', '-', '캐시미어 머플러', '-', '-', '-'];
+            case 'Year':
+                return ['캐시미어 코트', '고비 캐시미어', '캐시미어 니트', '고비 캐시미어', '캐시미어 머플러', '캐시미어 세탁', '캐시미어 100', '유니클로 캐시미어'];
+        }
+    } else if (search === 'Silk Scarf') {
+        switch (period) {
+            case 'Week':
+                return ['silk hair scarf', 'hermes', 'silk head scarf', 'hermes silk', 'head scarf', 'hermes scarf', 'black silk scarf', 'silk scarf'];
+            case 'Month':
+                return ['silk head scarf', 'louis vuitton', 'silk scarf for hair', 'how to tie a silk scarf', 'hermes silk scarf', 'silk scarf pokemon', 'gucci scarf', 'louis vuitton scarf silk'];
+            case 'Year':
+                return ['hair scarf', 'hermes scarf', 'head scarf', 'black silk scarf', 'silk head scarf', 'silk scarves', 'hermes', 'white silk scarf'];
+        }
+    } else if (search === '머플러' && country === 'Republic of Korea') {
+        switch (period) {
+            case 'Week':
+                return ['아크네 머플러', '캐시미어 머플러', '아크네', '아크네 스튜디오 머플러', '목도리', '스카프', '아크네 스튜디오', '버버리 머플러'];
+            case 'Month':
+                return ['아크네 머플러', '-', '버버리 머플러', '-', '머플러 매는 법', '-', '아크네 스튜디오 머플러', '-'];
+            case 'Year':
+                return ['아크네', '아크네 스튜디오', '아크네 머플러', '캐시미어 머플러', '목도리', '아크네 스튜디오 머플러', '머플러 매는 법', '스카프'];
+        }
+    }
+
+    // 기본값이나 다른 경우에 대한 결과를 반환합니다.
+    return ['아크네', '아크네 스튜디오', '아크네 머플러', '캐시미어 머플러', '목도리', '아크네 스튜디오 머플러', '머플러 매는 법', '스카프'];
+}
+
+
+
+// SelectWrapper 컴포넌트를 수정합니다.
+const SelectWrapper = ({ title, options, control }: ISelectWrapperProps) => {
+    return (
+        <div className="flex flex-col w-[200px]">
+            <div className="mb-2 text-sm font-medium text-gray-400">{title}</div>
+            <Controller
+                name={title as keyof IFormInput}
+                control={control}
+                render={({ field: { ref, ...restField } }) => ( // ref를 제거하고 restField를 전달합니다.
+                    <Select {...restField} onValueChange={restField.onChange} value={restField.value}>
+                        <SelectTrigger className="w-full">
+                            <SelectValue placeholder={title} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {options.map((option) => (
+                                <SelectItem key={option} value={option}>
+                                    {option}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                )}
+            />
+        </div>
+    );
+};
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    const router = useRouter();
+    const { control, handleSubmit } = useForm<IFormInput>({
+        defaultValues: {
+            Search: '',
+            Country: '',
+            Period: '',
+            Channel: ''
+        }
+    });
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+    const onSubmit = (data: IFormInput) => {
+        const results = getSearchResults(data.Search, data.Country, data.Period);
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+        console.log(data);
+        console.log(results);
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+        // 쿼리 파라미터로 변환합니다 (예: JSON 문자열화).
+        const queryParams = encodeURIComponent(JSON.stringify(results));
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
+        // 결과 페이지로 리다이렉트하면서 쿼리 파라미터를 포함시킵니다.
+        router.push(`/results?data=${queryParams}`);
+    };
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    // 각 Select 컴포넌트의 옵션들
+    const countries = ["Republic of Korea", "Japan", "China", "United State", "German", "Singapore", "United Kingdom", "France"];
+    const periods = ["Week", "Month", "Year"];
+    const channels = ["Google"];
+
+    return (
+        <main className="flex w-full min-h-screen items-center justify-center p-24 bg-gray-900">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex items-end justify-center gap-4 w-full">
+                {/* Input 필드 */}
+                <div className="flex flex-col w-[200px]">
+                    <div className="mb-2 text-sm font-medium text-gray-400">Search</div>
+                    <Controller
+                        name="Search"
+                        control={control}
+                        render={({ field }) => (
+                            <Input {...field} className="w-full" id="searchInput" placeholder="Search" type="text" />
+                        )}
+                    />
+                </div>
+                {/* Select 필드들 */}
+                <SelectWrapper title="Country" options={countries} control={control} />
+                <SelectWrapper title="Period" options={periods} control={control} />
+                <SelectWrapper title="Channel" options={channels} control={control} />
+                {/* Submit 버튼 */}
+                <div className="flex flex-col h-10 w-[150px]">
+                    <Button className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md shadow" type="submit">
+                        Search
+                    </Button>
+                </div>
+            </form>
+        </main>
+    );
 }
