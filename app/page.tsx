@@ -42,7 +42,7 @@ function getSearchResults(search: string, country: string, period: string): stri
             case 'Year':
                 return ['hair scarf', 'hermes scarf', 'head scarf', 'black silk scarf', 'silk head scarf', 'silk scarves', 'hermes', 'white silk scarf'];
         }
-    } else if (search === '머플러' && country === 'Republic of Korea') {
+    } else if ((search === '머플러' || search === '목도리')&& country === 'Republic of Korea') {
         switch (period) {
             case 'Week':
                 return ['아크네 머플러', '캐시미어 머플러', '아크네', '아크네 스튜디오 머플러', '목도리', '스카프', '아크네 스튜디오', '버버리 머플러'];
@@ -54,7 +54,7 @@ function getSearchResults(search: string, country: string, period: string): stri
     }
 
     // 기본값이나 다른 경우에 대한 결과를 반환합니다.
-    return ['12월 달력', '12월 날씨', '11월 12일', '12월 축제', '11월 11일 날씨', '12월 개봉 영화', '12월 25일'];
+    return ['12월 달력', '12월 날씨', '11월 12일', '12월 축제', '11월 11일 날씨', '12월 개봉 영화', '12월 25일', '크리스마스'];
 }
 
 
