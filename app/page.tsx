@@ -23,16 +23,17 @@ interface ISelectWrapperProps {
 }
 
 function getSearchResults(search: string, country: string, period: string): string[] {
-    if (search === '캐시미어' && country === 'Republic of Korea') {
+    search = search.toLowerCase();
+    if (search === '캐시미어' && (country === 'Republic of Korea' || country === 'United States')) {
         switch (period) {
             case 'Week':
-                return ['아크네 머플러', '캐시미어 머플러', '아크네 스튜디오 머플러', '목도리', '스카프', '아크네 스튜디오', '버버리 머플러'];
+                return ['아크네 머플러', '캐시미어 머플러', '아크네 머플러', '아크네 스튜디오 머플러', '목도리', '스카프', '아크네 스튜디오', '버버리 머플러'];
             case 'Month':
                 return ['캐시미어 코트', '-', '캐시미어 니트', '-', '캐시미어 머플러', '-', '-', '-'];
             case 'Year':
                 return ['캐시미어 코트', '고비 캐시미어', '캐시미어 니트', '고비 캐시미어', '캐시미어 머플러', '캐시미어 세탁', '캐시미어 100', '유니클로 캐시미어'];
         }
-    } else if (search === 'Silk Scarf') {
+    } else if (search === 'silk scarf' || search === '실크 스카프') {
         switch (period) {
             case 'Week':
                 return ['silk hair scarf', 'hermes', 'silk head scarf', 'hermes silk', 'head scarf', 'hermes scarf', 'black silk scarf', 'silk scarf'];
@@ -53,7 +54,7 @@ function getSearchResults(search: string, country: string, period: string): stri
     }
 
     // 기본값이나 다른 경우에 대한 결과를 반환합니다.
-    return ['아크네', '아크네 스튜디오', '아크네 머플러', '캐시미어 머플러', '목도리', '아크네 스튜디오 머플러', '머플러 매는 법', '스카프'];
+    return ['12월 달력', '12월 날씨', '11월 12일', '12월 축제', '11월 11일 날씨', '12월 개봉 영화', '12월 25일'];
 }
 
 
@@ -110,7 +111,7 @@ export default function Home() {
     };
 
     // 각 Select 컴포넌트의 옵션들
-    const countries = ["Republic of Korea", "Japan", "China", "United State", "German", "Singapore", "United Kingdom", "France"];
+    const countries = ["Republic of Korea", "Japan", "China", "United States", "German", "Singapore", "United Kingdom", "France"];
     const periods = ["Week", "Month", "Year"];
     const channels = ["Google"];
 
